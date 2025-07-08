@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Question } from '../types';
 
 interface FormQuestionProps {
@@ -12,6 +12,8 @@ export default function FormQuestion({ onSubmit }: FormQuestionProps) {
   const [subject, setSubject] = useState('');
   const [qimg, setQimg] = useState<Uint8Array | null>(null);
   const [aimg, setAimg] = useState<Uint8Array | null>(null);
+  const qimgRef = useRef<HTMLInputElement | null>(null);
+  const aimgRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -41,6 +43,8 @@ export default function FormQuestion({ onSubmit }: FormQuestionProps) {
       setSubject('');
       setQimg(null);
       setAimg(null);
+      if (qimgRef.current) qimgRef.current.value = '';
+      if (aimgRef.current) aimgRef.current.value = '';
     }
   };
 
@@ -49,19 +53,21 @@ export default function FormQuestion({ onSubmit }: FormQuestionProps) {
       onSubmit={handleSubmit}
       className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-3xl mx-auto p-4"
     >
-      {/* RIGA 1 */}
       <div className="flex flex-col">
-        <label className="font-semibold mb-1">Subject</label>
-        <input
-          type="text"
+        <label className="font-semibold mb-1">Materia</label>
+        <select
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           className="border border-gray-300 rounded px-2 py-1"
-        />
+        >
+          <option value="">Seleziona materia</option>
+          <option value="Analisi Matematica">Analisi Matematica</option>
+          <option value="Altro">Altro</option>
+        </select>
       </div>
 
       <div className="flex flex-col">
-        <label className="font-semibold mb-1">Topic</label>
+        <label className="font-semibold mb-1">Argomento</label>
         <input
           type="text"
           value={topic}
@@ -70,31 +76,32 @@ export default function FormQuestion({ onSubmit }: FormQuestionProps) {
         />
       </div>
 
-      {/* RIGA 2 */}
       <div className="flex flex-col">
-        <label className="font-semibold mb-1">Question</label>
-        <input
-          type="text"
+        <label className="font-semibold mb-1">Domanda</label>
+        <textarea
           value={question}
+          placeholder='Supporta HTML e MathJax. Esempio: "La derivata di x^2 è $2x$"'
           onChange={(e) => setQuestion(e.target.value)}
-          className="border border-gray-300 rounded px-2 py-1"
+          rows={2}
+          className="border border-gray-300 rounded px-2 py-1 resize-y"
         />
       </div>
 
       <div className="flex flex-col">
-        <label className="font-semibold mb-1">Answer</label>
-        <input
-          type="text"
+        <label className="font-semibold mb-1">Risposta</label>
+        <textarea
           value={answer}
+          placeholder='Supporta HTML e MathJax. Esempio: "La derivata di x^2 è $2x$"'
           onChange={(e) => setAnswer(e.target.value)}
-          className="border border-gray-300 rounded px-2 py-1"
+          rows={2}
+          className="border border-gray-300 rounded px-2 py-1 resize-y"
         />
       </div>
 
-      {/* RIGA 3 */}
       <div className="flex flex-col">
-        <label className="font-semibold mb-1">Question Image</label>
+        <label className="font-semibold mb-1">Immagine domanda (opzionale):</label>
         <input
+          ref={qimgRef}
           type="file"
           accept="image/*"
           onChange={(e) => handleFileChange(e, setQimg)}
@@ -103,8 +110,9 @@ export default function FormQuestion({ onSubmit }: FormQuestionProps) {
       </div>
 
       <div className="flex flex-col">
-        <label className="font-semibold mb-1">Answer Image</label>
+        <label className="font-semibold mb-1">Immagine risposta (opzionale)</label>
         <input
+          ref={aimgRef}
           type="file"
           accept="image/*"
           onChange={(e) => handleFileChange(e, setAimg)}
@@ -112,13 +120,13 @@ export default function FormQuestion({ onSubmit }: FormQuestionProps) {
         />
       </div>
 
-      {/* PULSANTE */}
-      <div className="col-span-1 md:col-span-2 text-center mt-4">
+      <div className="col-span-1 md:col-span-2 text-right mt-4">
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!subject || !topic || !question || !answer}
         >
-          Save Question
+          Aggiungi
         </button>
       </div>
     </form>

@@ -76,18 +76,9 @@ function App() {
 
   const handleSubmit = async (newQuestion: Omit<Question, 'id'>): Promise<boolean> => {
     try {
-      const questionToInsert: Question = {
-        id: Date.now(), // oppure lascia `null` se il DB lo autogenera
-        ...newQuestion,
-      };
-
-      // Salvataggio lato main process, ad esempio via window.api
-      await window.flashcardAPI.add(questionToInsert);
-
-      // Ricarica tabella
+      await window.flashcardAPI.add(newQuestion);
       const updated = await window.flashcardAPI.load();
       setQuestions(updated);
-
       return true;
     } catch (error) {
       console.error('Errore durante il salvataggio:', error);
@@ -126,9 +117,6 @@ function App() {
 
   return (
     <div className="app-root">
-      <div className="p-4 bg-green-600 text-white font-bold">
-        ✅ Tailwind CSS v4 funziona!
-      </div>
       <h1 className="app-title">Elenco Quesiti</h1>
       <FormQuestion onSubmit={handleSubmit} />
       <div className="app-search-row">
