@@ -54,12 +54,12 @@ function App() {
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
 
   useEffect(() => {
-    window.questionAPI.load().then((data: Question[]) => {
+    window.flashcardAPI.load().then((data: Question[]) => {
       if (!data || data.length === 0) {
         setQuestions(defaultQuestions);
         // Popola il DB se vuoto
-        Promise.all(defaultQuestions.map(q => window.questionAPI.add(q))).then(() => {
-          window.questionAPI.load().then(setQuestions).finally(() => setLoading(false));
+        Promise.all(defaultQuestions.map(q => window.flashcardAPI.add(q))).then(() => {
+          window.flashcardAPI.load().then(setQuestions).finally(() => setLoading(false));
         });
       } else {
         setQuestions(data);
@@ -94,7 +94,7 @@ function App() {
     const nuovoQuestion = {
       ...form,
     };
-    window.questionAPI.add(nuovoQuestion).then((q) => {
+    window.flashcardAPI.add(nuovoQuestion).then((q) => {
       setQuestions([q, ...questions]);
     });
     setForm({ subject: "", topic: "", question: "", answer: "" });
@@ -230,8 +230,8 @@ function App() {
                   type="button"
                   title="Rimuovi"
                   onClick={() => {
-                    window.questionAPI.remove(q.id).then(() => {
-                      window.questionAPI.load().then(setQuestions);
+                    window.flashcardAPI.remove(q.id).then(() => {
+                      window.flashcardAPI.load().then(setQuestions);
                     });
                   }}
                   className="app-table-remove"

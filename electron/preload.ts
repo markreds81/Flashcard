@@ -24,7 +24,7 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // ...
 })
 
-contextBridge.exposeInMainWorld('questionAPI', {
+contextBridge.exposeInMainWorld('flashcardAPI', {
   load: (): Promise<Question[]> => ipcRenderer.invoke('load-questions'),
   add: (q: Omit<Question, 'id'>): Promise<Question> => ipcRenderer.invoke('add-question', q),
   remove: (id: number): Promise<void> => ipcRenderer.invoke('remove-question', id),

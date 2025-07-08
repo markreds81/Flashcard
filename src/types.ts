@@ -14,6 +14,6 @@ interface QuestionAPI {
 
 declare global {
   interface Window {
-    questionAPI: QuestionAPI;
+    flashcardAPI: QuestionAPI;
   }
 }
