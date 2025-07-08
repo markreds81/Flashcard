@@ -1,0 +1,69 @@
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+release/
+temp/
+.vite/
+
+# Vite cache
+.cache/
+.vite/
+
+# Electron specific
+*.asar
+*.log
+*.pid
+*.seed
+*.bak
+*.old
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage/
+.nyc_output/
+
+# npm/yarn/pnpm logs & locks
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+*.log
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editors/IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Misc
+*.tgz
+*.swp
+*.bak
+*.tmp
+
+# Electron builder
+electron-builder-cache/
+output-metadata.json
+
+# OS-specific metadata (Linux)
+.directory

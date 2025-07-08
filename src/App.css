@@ -1,0 +1,271 @@
+#root {
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
+  padding: 2rem;
+  text-align: center;
+  background: var(--bg, #fff);
+  color: var(--fg, #222);
+  min-height: 100vh;
+  transition: background 0.2s, color 0.2s;
+}
+
+:root {
+  --bg: #fff;
+  --fg: #222;
+  --card-bg: #f9f9f9;
+  --table-header: #f2f2f2;
+  --border: #ccc;
+  --input-bg: #fff;
+  --input-fg: #222;
+  --button-bg: #1976d2;
+  --button-fg: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #181c20;
+    --fg: #f3f3f3;
+    --card-bg: #23272e;
+    --table-header: #23272e;
+    --border: #333a44;
+    --input-bg: #23272e;
+    --input-fg: #f3f3f3;
+    --button-bg: #1976d2;
+    --button-fg: #fff;
+  }
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+  background: var(--card-bg);
+  color: var(--fg);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px #0002;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+input, textarea {
+  background: var(--input-bg);
+  color: var(--input-fg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+
+input:focus, textarea:focus {
+  outline: 2px solid #1976d2;
+}
+
+table {
+  background: var(--card-bg);
+  color: var(--fg);
+}
+
+th, td {
+  border: 1px solid var(--border);
+}
+
+th {
+  background: var(--table-header);
+}
+
+button {
+  background: var(--button-bg);
+  color: var(--button-fg);
+}
+
+/* App.css: spostamento di tutti gli stili inline in classi CSS */
+
+.app-root {
+  padding: 2rem;
+  max-width: 100%;
+}
+
+.app-title {
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+.app-form {
+  margin-bottom: 2rem;
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px #0001;
+}
+
+.app-form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.app-form-input,
+.app-form-select,
+.app-form-textarea {
+  background: var(--input-bg);
+  color: var(--input-fg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+.app-form-select {
+  flex: 1;
+  min-width: 120px;
+}
+
+.app-form-input {
+  flex: 1;
+  min-width: 120px;
+}
+
+.app-form-textarea {
+  flex: 1;
+  min-width: 180px;
+}
+
+.app-form-submit {
+  padding: 0.5rem 1.5rem;
+  background: var(--button-bg);
+  color: var(--button-fg);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.app-search-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.app-search-box {
+  position: relative;
+  min-width: 200px;
+  width: 240px;
+}
+
+.app-search-input {
+  width: 100%;
+  padding: 0.5rem 2.2rem 0.5rem 0.5rem;
+  background: var(--input-bg);
+  color: var(--input-fg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.app-search-reset {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background: none;
+  border: none;
+  color: var(--fg);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg);
+  color: var(--fg);
+}
+
+.app-table th,
+.app-table td {
+  border: 1px solid var(--border);
+  padding: 8px;
+}
+
+.app-table th {
+  background: var(--table-header);
+}
+
+.app-table-row {
+  cursor: pointer;
+}
+
+.app-table-remove {
+  background: none;
+  border: none;
+  color: var(--fg);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.app-detail {
+  padding: 2rem;
+  max-width: 100%;
+}
+
+.app-detail-back {
+  margin-bottom: 24px;
+  padding: 0.5rem 1.2rem;
+  background: var(--button-bg);
+  color: var(--button-fg);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.app-detail-title {
+  margin-top: 0;
+}
+
+.app-detail-section {
+  margin-bottom: 24px;
+}
+
+.app-detail-label {
+  font-weight: bold;
+}
+
+.app-detail-id {
+  color: #888;
+  font-size: 14px;
+}
