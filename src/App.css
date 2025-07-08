@@ -275,3 +275,16 @@ button {
   color: #888;
   font-size: 14px;
 }
+
+.app-form-file {
+  margin-top: 0.5rem;
+  display: block;
+  background: var(--input-bg);
+  color: var(--input-fg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 220px;
+}

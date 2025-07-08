@@ -1,8 +1,9 @@
 import InlineMath from "@matejmazur/react-katex";
+import { useState, useEffect } from "react";
+import { Question } from "./types";
 import "katex/dist/katex.min.css";
 import "./App.css";
-import React, { useState, useEffect } from "react";
-import { Question } from "./types";
+import FormQuestion from "./components/FormQuestion";
 
 const defaultQuestions: Question[] = [
   {
@@ -43,12 +44,6 @@ function renderWithMath(content: string) {
 
 function App() {
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [form, setForm] = useState({
-    subject: "",
-    topic: "",
-    question: "",
-    answer: "",
-  });
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
@@ -79,25 +74,25 @@ function App() {
     );
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleSubmit = async (newQuestion: Omit<Question, 'id'>): Promise<boolean> => {
+    try {
+      const questionToInsert: Question = {
+        id: Date.now(), // oppure lascia `null` se il DB lo autogenera
+        ...newQuestion,
+      };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.subject || !form.topic || !form.question || !form.answer)
-      return;
-    const nuovoQuestion = {
-      ...form,
-    };
-    window.flashcardAPI.add(nuovoQuestion).then((q) => {
-      setQuestions([q, ...questions]);
-    });
-    setForm({ subject: "", topic: "", question: "", answer: "" });
+      // Salvataggio lato main process, ad esempio via window.api
+      await window.flashcardAPI.add(questionToInsert);
+
+      // Ricarica tabella
+      const updated = await window.flashcardAPI.load();
+      setQuestions(updated);
+
+      return true;
+    } catch (error) {
+      console.error('Errore durante il salvataggio:', error);
+      return false;
+    }
   };
 
   if (loading) {
@@ -131,57 +126,11 @@ function App() {
 
   return (
     <div className="app-root">
+      <div className="p-4 bg-green-600 text-white font-bold">
+        ✅ Tailwind CSS v4 funziona!
+      </div>
       <h1 className="app-title">Elenco Quesiti</h1>
-      <form onSubmit={handleSubmit} className="app-form">
-        <div className="app-form-row">
-          <select
-            name="subject"
-            value={form.subject}
-            onChange={handleChange}
-            className="app-form-select"
-            required
-          >
-            <option value="" disabled>
-              Materia
-            </option>
-            <option value="Analisi Matematica">Analisi Matematica</option>
-            <option value="Altro">Altro</option>
-          </select>
-          <input
-            name="topic"
-            placeholder="Argomento"
-            value={form.topic}
-            onChange={handleChange}
-            className="app-form-input"
-            required
-          />
-        </div>
-        <div className="app-form-row">
-          <textarea
-            name="question"
-            placeholder="Domanda (supporta LaTeX e HTML)"
-            value={form.question}
-            onChange={handleChange}
-            className="app-form-textarea"
-            required
-            rows={2}
-          />
-          <textarea
-            name="answer"
-            placeholder="Risposta (supporta LaTeX e HTML)"
-            value={form.answer}
-            onChange={handleChange}
-            className="app-form-textarea"
-            required
-            rows={2}
-          />
-        </div>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button type="submit" className="app-form-submit">
-            Aggiungi
-          </button>
-        </div>
-      </form>
+      <FormQuestion onSubmit={handleSubmit} />
       <div className="app-search-row">
         <div className="app-search-box">
           <input

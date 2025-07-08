@@ -24,7 +24,9 @@ db.prepare(`
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     topic TEXT NOT NULL,
-    subject TEXT NOT NULL
+    subject TEXT NOT NULL,
+    qimg BLOB,
+    aimg BLOB
   )
 `).run()
 
@@ -94,8 +96,15 @@ ipcMain.handle('load-questions', () => {
 })
 
 ipcMain.handle('add-question', (_event, q) => {
-  const stmt = db.prepare('INSERT INTO questions (question, answer, topic, subject) VALUES (?, ?, ?, ?)')
-  const info = stmt.run(q.question, q.answer, q.topic, q.subject)
+  const stmt = db.prepare('INSERT INTO questions (question, answer, topic, subject, qimg, aimg) VALUES (?, ?, ?, ?, ?, ?)')
+  const info = stmt.run(
+    q.question,
+    q.answer,
+    q.topic,
+    q.subject,
+    q.qimg ?? null,
+    q.aimg ?? null
+  )
   return { ...q, id: info.lastInsertRowid }
 })
 

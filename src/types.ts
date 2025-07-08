@@ -4,6 +4,8 @@ export interface Question {
   answer: string;
   topic: string;
   subject: string;
+  qimg?: Uint8Array | null;
+  aimg?: Uint8Array | null;
 }
 
 interface QuestionAPI {
