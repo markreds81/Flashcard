@@ -1,4 +1,4 @@
-# Flashcard Quesiti App (React + Electron + SQLite)
+# Flashcard Questions App (React + Electron + SQLite)
 
 Questa applicazione è un gestore di flashcard (quesiti) con supporto a LaTeX, immagini, ricerca e persistenza sicura su database locale. È pensata per studenti e docenti che vogliono creare, consultare e gestire domande/risposte in modo semplice e moderno.
 

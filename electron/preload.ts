@@ -1,5 +1,5 @@
 import { ipcRenderer, contextBridge } from 'electron'
-import type { Quesito } from '../src/types'
+import type { Question } from '../src/types'
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', {
@@ -24,8 +24,8 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // ...
 })
 
-contextBridge.exposeInMainWorld('quesitiAPI', {
-  load: (): Promise<Quesito[]> => ipcRenderer.invoke('load-quesiti'),
-  add: (q: Omit<Quesito, 'id'>): Promise<Quesito> => ipcRenderer.invoke('add-quesito', q),
-  remove: (id: number): Promise<void> => ipcRenderer.invoke('remove-quesito', id),
+contextBridge.exposeInMainWorld('questionAPI', {
+  load: (): Promise<Question[]> => ipcRenderer.invoke('load-questions'),
+  add: (q: Omit<Question, 'id'>): Promise<Question> => ipcRenderer.invoke('add-question', q),
+  remove: (id: number): Promise<void> => ipcRenderer.invoke('remove-question', id),
 })

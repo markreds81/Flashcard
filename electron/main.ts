@@ -15,11 +15,11 @@ globalThis.__filename = __filename
 // @ts-ignore
 globalThis.__dirname = __dirname
 
-const dbPath = path.join(app.getPath('userData'), 'quesiti.sqlite')
+const dbPath = path.join(app.getPath('userData'), 'flashcard.sqlite')
 const db = new Database(dbPath)
 
 db.prepare(`
-  CREATE TABLE IF NOT EXISTS quesiti (
+  CREATE TABLE IF NOT EXISTS questions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     domanda TEXT NOT NULL,
     risposta TEXT NOT NULL,
@@ -89,17 +89,17 @@ app.on('activate', () => {
 
 app.whenReady().then(createWindow)
 
-ipcMain.handle('load-quesiti', () => {
-  return db.prepare('SELECT * FROM quesiti ORDER BY id DESC').all()
+ipcMain.handle('load-questions', () => {
+  return db.prepare('SELECT * FROM questions ORDER BY id DESC').all()
 })
 
-ipcMain.handle('add-quesito', (_event, q) => {
-  const stmt = db.prepare('INSERT INTO quesiti (domanda, risposta, argomento, materia) VALUES (?, ?, ?, ?)')
-  const info = stmt.run(q.domanda, q.risposta, q.argomento, q.materia)
+ipcMain.handle('add-question', (_event, q) => {
+  const stmt = db.prepare('INSERT INTO questions (question, answer, topic, subject) VALUES (?, ?, ?, ?)')
+  const info = stmt.run(q.question, q.answer, q.topic, q.subject)
   return { ...q, id: info.lastInsertRowid }
 })
 
-ipcMain.handle('remove-quesito', (_event, id) => {
-  db.prepare('DELETE FROM quesiti WHERE id = ?').run(id)
+ipcMain.handle('remove-question', (_event, id) => {
+  db.prepare('DELETE FROM questions WHERE id = ?').run(id)
   return true
 })

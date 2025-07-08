@@ -2,28 +2,28 @@ import InlineMath from "@matejmazur/react-katex";
 import "katex/dist/katex.min.css";
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import { Quesito } from "./types";
+import { Question } from "./types";
 
-const quesiti_def: Quesito[] = [
+const defaultQuestions: Question[] = [
   {
     id: 1,
-    domanda: `
+    question: `
       Quanto vale \\( \\frac{1}{2} + \\frac{3}{4} \\)?<br/>
       <img src="immagini/somma-frazioni.png" width="150" />
     `,
-    risposta: `
+    answer: `
       Il risultato è \\( \\frac{5}{4} \\).<br/>
       <img src="immagini/risultato.png" width="100" />
     `,
-    argomento: "Frazioni",
-    materia: "Matematica",
+    topic: "Frazioni",
+    subject: "Matematica",
   },
   {
     id: 2,
-    domanda: "Qual è la derivata di \\( \\sin(x) \\) ?",
-    risposta: "La derivata di \\( \\sin(x) \\) è \\( \\cos(x) \\)",
-    argomento: "Derivate",
-    materia: "Analisi",
+    question: "Qual è la derivata di \\( \\sin(x) \\) ?",
+    answer: "La derivata di \\( \\sin(x) \\) è \\( \\cos(x) \\)",
+    topic: "Derivate",
+    subject: "Analisi",
   },
 ];
 
@@ -42,40 +42,40 @@ function renderWithMath(content: string) {
 }
 
 function App() {
-  const [quesitiState, setQuesitiState] = useState<Quesito[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [form, setForm] = useState({
-    materia: "",
-    argomento: "",
-    domanda: "",
-    risposta: "",
+    subject: "",
+    topic: "",
+    question: "",
+    answer: "",
   });
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [selectedQuesito, setSelectedQuesito] = useState<Quesito | null>(null);
+  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
 
   useEffect(() => {
-    window.quesitiAPI.load().then((data: Quesito[]) => {
+    window.questionAPI.load().then((data: Question[]) => {
       if (!data || data.length === 0) {
-        setQuesitiState(quesiti_def);
+        setQuestions(defaultQuestions);
         // Popola il DB se vuoto
-        Promise.all(quesiti_def.map(q => window.quesitiAPI.add(q))).then(() => {
-          window.quesitiAPI.load().then(setQuesitiState).finally(() => setLoading(false));
+        Promise.all(defaultQuestions.map(q => window.questionAPI.add(q))).then(() => {
+          window.questionAPI.load().then(setQuestions).finally(() => setLoading(false));
         });
       } else {
-        setQuesitiState(data);
+        setQuestions(data);
         setLoading(false);
       }
     }).catch(() => {
-      setQuesitiState(quesiti_def);
+      setQuestions(defaultQuestions);
       setLoading(false);
     });
   }, []);
 
-  const filteredQuesiti = quesitiState.filter((q) => {
+  const filteredQuestions = questions.filter((q) => {
     const s = search.toLowerCase();
     return (
-      q.domanda.toLowerCase().includes(s) ||
-      q.risposta.toLowerCase().includes(s)
+      q.question.toLowerCase().includes(s) ||
+      q.answer.toLowerCase().includes(s)
     );
   });
 
@@ -89,15 +89,15 @@ function App() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.materia || !form.argomento || !form.domanda || !form.risposta)
+    if (!form.subject || !form.topic || !form.question || !form.answer)
       return;
-    const nuovoQuesito = {
+    const nuovoQuestion = {
       ...form,
     };
-    window.quesitiAPI.add(nuovoQuesito).then((q) => {
-      setQuesitiState([q, ...quesitiState]);
+    window.questionAPI.add(nuovoQuestion).then((q) => {
+      setQuestions([q, ...questions]);
     });
-    setForm({ materia: "", argomento: "", domanda: "", risposta: "" });
+    setForm({ subject: "", topic: "", question: "", answer: "" });
   };
 
   if (loading) {
@@ -108,23 +108,23 @@ function App() {
     );
   }
 
-  if (selectedQuesito) {
+  if (selectedQuestion) {
     return (
       <div className="app-detail">
         <button
-          onClick={() => setSelectedQuesito(null)}
+          onClick={() => setSelectedQuestion(null)}
           className="app-detail-back"
         >
           ← Back
         </button>
-        <h2 className="app-detail-title">{selectedQuesito.materia} — {selectedQuesito.argomento}</h2>
+        <h2 className="app-detail-title">{selectedQuestion.subject} — {selectedQuestion.topic}</h2>
         <div className="app-detail-section">
           <span className="app-detail-label">Domanda:</span>
-          <div style={{ marginTop: 8, marginBottom: 16 }}>{renderWithMath(selectedQuesito.domanda)}</div>
+          <div style={{ marginTop: 8, marginBottom: 16 }}>{renderWithMath(selectedQuestion.question)}</div>
           <span className="app-detail-label">Risposta:</span>
-          <div style={{ marginTop: 8 }}>{renderWithMath(selectedQuesito.risposta)}</div>
+          <div style={{ marginTop: 8 }}>{renderWithMath(selectedQuestion.answer)}</div>
         </div>
-        <div className="app-detail-id">ID: {selectedQuesito.id}</div>
+        <div className="app-detail-id">ID: {selectedQuestion.id}</div>
       </div>
     );
   }
@@ -135,8 +135,8 @@ function App() {
       <form onSubmit={handleSubmit} className="app-form">
         <div className="app-form-row">
           <select
-            name="materia"
-            value={form.materia}
+            name="subject"
+            value={form.subject}
             onChange={handleChange}
             className="app-form-select"
             required
@@ -148,9 +148,9 @@ function App() {
             <option value="Altro">Altro</option>
           </select>
           <input
-            name="argomento"
+            name="topic"
             placeholder="Argomento"
-            value={form.argomento}
+            value={form.topic}
             onChange={handleChange}
             className="app-form-input"
             required
@@ -158,18 +158,18 @@ function App() {
         </div>
         <div className="app-form-row">
           <textarea
-            name="domanda"
+            name="question"
             placeholder="Domanda (supporta LaTeX e HTML)"
-            value={form.domanda}
+            value={form.question}
             onChange={handleChange}
             className="app-form-textarea"
             required
             rows={2}
           />
           <textarea
-            name="risposta"
+            name="answer"
             placeholder="Risposta (supporta LaTeX e HTML)"
-            value={form.risposta}
+            value={form.answer}
             onChange={handleChange}
             className="app-form-textarea"
             required
@@ -213,25 +213,25 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {filteredQuesiti.map((q) => (
+          {filteredQuestions.map((q) => (
             <tr
               key={q.id}
               onClick={e => {
                 if ((e.target as HTMLElement).tagName === 'BUTTON') return;
-                setSelectedQuesito(q);
+                setSelectedQuestion(q);
               }}
               className="app-table-row"
             >
               <td>{q.id}</td>
-              <td>{renderWithMath(q.domanda)}</td>
-              <td>{renderWithMath(q.risposta)}</td>
+              <td>{renderWithMath(q.question)}</td>
+              <td>{renderWithMath(q.answer)}</td>
               <td style={{ textAlign: 'center' }}>
                 <button
                   type="button"
                   title="Rimuovi"
                   onClick={() => {
-                    window.quesitiAPI.remove(q.id).then(() => {
-                      window.quesitiAPI.load().then(setQuesitiState);
+                    window.questionAPI.remove(q.id).then(() => {
+                      window.questionAPI.load().then(setQuestions);
                     });
                   }}
                   className="app-table-remove"

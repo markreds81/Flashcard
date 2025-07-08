@@ -1,19 +1,19 @@
-export interface Quesito {
+export interface Question {
   id: number;
-  domanda: string;
-  risposta: string;
-  argomento: string;
-  materia: string;
+  question: string;
+  answer: string;
+  topic: string;
+  subject: string;
 }
 
-interface QuesitiAPI {
-  load: () => Promise<Quesito[]>;
-  add: (q: Omit<Quesito, 'id'>) => Promise<Quesito>;
+interface QuestionAPI {
+  load: () => Promise<Question[]>;
+  add: (q: Omit<Question, 'id'>) => Promise<Question>;
   remove: (id: number) => Promise<void>;
 }
 
 declare global {
   interface Window {
-    quesitiAPI: QuesitiAPI;
+    questionAPI: QuestionAPI;
   }
 }
