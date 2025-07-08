@@ -21,10 +21,10 @@ const db = new Database(dbPath)
 db.prepare(`
   CREATE TABLE IF NOT EXISTS questions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    domanda TEXT NOT NULL,
-    risposta TEXT NOT NULL,
-    argomento TEXT NOT NULL,
-    materia TEXT NOT NULL
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    topic TEXT NOT NULL,
+    subject TEXT NOT NULL
   )
 `).run()
 
