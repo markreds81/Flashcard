@@ -46,49 +46,72 @@ function App() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
+  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
+    null
+  );
+  const [isPopupOpen, setPopupOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    window.flashcardAPI.load().then((data: Question[]) => {
-      if (!data || data.length === 0) {
+    window.flashcardAPI
+      .load()
+      .then((data: Question[]) => {
+        if (!data || data.length === 0) {
+          setQuestions(defaultQuestions);
+          // Popola il DB se vuoto
+          Promise.all(
+            defaultQuestions.map((q) => window.flashcardAPI.add(q))
+          ).then(() => {
+            window.flashcardAPI
+              .load()
+              .then(setQuestions)
+              .finally(() => setLoading(false));
+          });
+        } else {
+          setQuestions(data);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
         setQuestions(defaultQuestions);
-        // Popola il DB se vuoto
-        Promise.all(defaultQuestions.map(q => window.flashcardAPI.add(q))).then(() => {
-          window.flashcardAPI.load().then(setQuestions).finally(() => setLoading(false));
-        });
-      } else {
-        setQuestions(data);
         setLoading(false);
-      }
-    }).catch(() => {
-      setQuestions(defaultQuestions);
-      setLoading(false);
-    });
+      });
   }, []);
 
   const filteredQuestions = questions.filter((q) => {
     const s = search.toLowerCase();
     return (
-      q.question.toLowerCase().includes(s) ||
-      q.answer.toLowerCase().includes(s)
+      q.question.toLowerCase().includes(s) || q.answer.toLowerCase().includes(s)
     );
   });
 
-  const handleSubmit = async (newQuestion: Omit<Question, 'id'>): Promise<boolean> => {
+  const handleSubmit = async (
+    newQuestion: Omit<Question, "id">
+  ): Promise<boolean> => {
     try {
       await window.flashcardAPI.add(newQuestion);
       const updated = await window.flashcardAPI.load();
       setQuestions(updated);
       return true;
     } catch (error) {
-      console.error('Errore durante il salvataggio:', error);
+      console.error("Errore durante il salvataggio:", error);
       return false;
     }
   };
 
   if (loading) {
     return (
-      <div className="app-root" style={{ color: "var(--fg)", background: "var(--bg)", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem" }}>
+      <div
+        className="app-root"
+        style={{
+          color: "var(--fg)",
+          background: "var(--bg)",
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "1.3rem",
+        }}
+      >
         Caricamento quesiti...
       </div>
     );
@@ -103,12 +126,18 @@ function App() {
         >
           ← Back
         </button>
-        <h2 className="app-detail-title">{selectedQuestion.subject} — {selectedQuestion.topic}</h2>
+        <h2 className="app-detail-title">
+          {selectedQuestion.subject} — {selectedQuestion.topic}
+        </h2>
         <div className="app-detail-section">
           <span className="app-detail-label">Domanda:</span>
-          <div style={{ marginTop: 8, marginBottom: 16 }}>{renderWithMath(selectedQuestion.question)}</div>
+          <div style={{ marginTop: 8, marginBottom: 16 }}>
+            {renderWithMath(selectedQuestion.question)}
+          </div>
           <span className="app-detail-label">Risposta:</span>
-          <div style={{ marginTop: 8 }}>{renderWithMath(selectedQuestion.answer)}</div>
+          <div style={{ marginTop: 8 }}>
+            {renderWithMath(selectedQuestion.answer)}
+          </div>
         </div>
         <div className="app-detail-id">ID: {selectedQuestion.id}</div>
       </div>
@@ -118,8 +147,19 @@ function App() {
   return (
     <div className="app-root">
       <h1 className="app-title">Elenco Quesiti</h1>
-      <FormQuestion onSubmit={handleSubmit} />
+      <FormQuestion
+        open={isPopupOpen}
+        onOpenChange={setPopupOpen}
+        onSubmit={handleSubmit}
+      />
       <div className="app-search-row">
+        <button
+          type="button"
+          className="app-form-submit"
+          onClick={() => setPopupOpen(true)}
+        >
+          Nuovo
+        </button>
         <div className="app-search-box">
           <input
             type="text"
@@ -153,8 +193,8 @@ function App() {
           {filteredQuestions.map((q) => (
             <tr
               key={q.id}
-              onClick={e => {
-                if ((e.target as HTMLElement).tagName === 'BUTTON') return;
+              onClick={(e) => {
+                if ((e.target as HTMLElement).tagName === "BUTTON") return;
                 setSelectedQuestion(q);
               }}
               className="app-table-row"
@@ -162,7 +202,7 @@ function App() {
               <td>{q.id}</td>
               <td>{renderWithMath(q.question)}</td>
               <td>{renderWithMath(q.answer)}</td>
-              <td style={{ textAlign: 'center' }}>
+              <td style={{ textAlign: "center" }}>
                 <button
                   type="button"
                   title="Rimuovi"
