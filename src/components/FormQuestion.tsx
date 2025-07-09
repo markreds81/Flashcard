@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Question } from "../types";
+import { Question } from "@/types";
 import {
   Dialog,
   DialogContent,
@@ -19,19 +19,23 @@ export default function FormQuestion({ open, onOpenChange, onSubmit }: FormQuest
   const [answer, setAnswer] = useState("");
   const [topic, setTopic] = useState("");
   const [subject, setSubject] = useState("");
-  const [qimg, setQimg] = useState<Uint8Array | null>(null);
-  const [aimg, setAimg] = useState<Uint8Array | null>(null);
+  const [qimgData, setQimgData] = useState<Uint8Array | null>(null);
+  const [qimgMime, setQimgMime] = useState<string | null>(null);
+  const [aimgData, setAimgData] = useState<Uint8Array | null>(null);
+  const [aimgMime, setAimgMime] = useState<string | null>(null);
   const qimgRef = useRef<HTMLInputElement | null>(null);
   const aimgRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    setter: (data: Uint8Array | null) => void
+    setData: (data: Uint8Array | null) => void,
+    setMime: (mime: string | null) => void
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const arrayBuffer = await file.arrayBuffer();
-    setter(new Uint8Array(arrayBuffer));
+    setData(new Uint8Array(arrayBuffer));
+    setMime(file.type);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,8 +45,10 @@ export default function FormQuestion({ open, onOpenChange, onSubmit }: FormQuest
       answer,
       topic,
       subject,
-      qimg,
-      aimg,
+      qimg_data: qimgData,
+      qimg_mime: qimgMime,
+      aimg_data: aimgData,
+      aimg_mime: aimgMime
     });
 
     if (success) {
@@ -50,8 +56,10 @@ export default function FormQuestion({ open, onOpenChange, onSubmit }: FormQuest
       setAnswer("");
       setTopic("");
       setSubject("");
-      setQimg(null);
-      setAimg(null);
+      setQimgData(null);
+      setQimgMime(null);
+      setAimgData(null);
+      setAimgMime(null);
       onOpenChange(false);
       if (qimgRef.current) qimgRef.current.value = "";
       if (aimgRef.current) aimgRef.current.value = "";
@@ -124,7 +132,7 @@ export default function FormQuestion({ open, onOpenChange, onSubmit }: FormQuest
               ref={qimgRef}
               type="file"
               accept="image/*"
-              onChange={(e) => handleFileChange(e, setQimg)}
+              onChange={(e) => handleFileChange(e, setQimgData, setQimgMime)}
               className="border border-gray-300 rounded px-2 py-1"
             />
           </div>
@@ -137,7 +145,7 @@ export default function FormQuestion({ open, onOpenChange, onSubmit }: FormQuest
               ref={aimgRef}
               type="file"
               accept="image/*"
-              onChange={(e) => handleFileChange(e, setAimg)}
+              onChange={(e) => handleFileChange(e, setAimgData, setAimgMime)}
               className="border border-gray-300 rounded px-2 py-1"
             />
           </div>

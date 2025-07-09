@@ -42,6 +42,16 @@ function renderWithMath(content: string) {
   });
 }
 
+function arrayBufferToBase64(buffer: Uint8Array): string {
+  let binary = "";
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
 function App() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [search, setSearch] = useState("");
@@ -118,6 +128,7 @@ function App() {
   }
 
   if (selectedQuestion) {
+    console.log("Selected question:", selectedQuestion);
     return (
       <div className="app-detail">
         <button
@@ -134,10 +145,44 @@ function App() {
           <div style={{ marginTop: 8, marginBottom: 16 }}>
             {renderWithMath(selectedQuestion.question)}
           </div>
+          {selectedQuestion.qimg_data && selectedQuestion.qimg_mime && (
+            <img
+              src={`data:${
+                selectedQuestion.qimg_mime
+              };base64,${arrayBufferToBase64(selectedQuestion.qimg_data)}`}
+              alt="Immagine domanda"
+              style={{
+                marginTop: 8,
+                marginBottom: 16,
+                maxWidth: "100%",
+                height: "auto",
+                display: "block",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            />
+          )}
           <span className="app-detail-label">Risposta:</span>
           <div style={{ marginTop: 8 }}>
             {renderWithMath(selectedQuestion.answer)}
           </div>
+          {selectedQuestion.aimg_data && selectedQuestion.aimg_mime && (
+            <img
+              src={`data:${
+                selectedQuestion.aimg_mime
+              };base64,${arrayBufferToBase64(selectedQuestion.aimg_data)}`}
+              alt="Immagine risposta"
+              style={{
+                marginTop: 8,
+                marginBottom: 16,
+                maxWidth: "100%",
+                height: "auto",
+                display: "block",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            />
+          )}
         </div>
         <div className="app-detail-id">ID: {selectedQuestion.id}</div>
       </div>

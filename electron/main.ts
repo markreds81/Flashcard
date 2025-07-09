@@ -25,8 +25,10 @@ db.prepare(`
     answer TEXT NOT NULL,
     topic TEXT NOT NULL,
     subject TEXT NOT NULL,
-    qimg BLOB,
-    aimg BLOB
+    qimg_data BLOB,
+    qimg_mime TEXT,
+    aimg_data BLOB,
+    aimg_mime TEXT
   )
 `).run()
 
@@ -96,14 +98,16 @@ ipcMain.handle('load-questions', () => {
 })
 
 ipcMain.handle('add-question', (_event, q) => {
-  const stmt = db.prepare('INSERT INTO questions (question, answer, topic, subject, qimg, aimg) VALUES (?, ?, ?, ?, ?, ?)')
+  const stmt = db.prepare('INSERT INTO questions (question, answer, topic, subject, qimg_data, qimg_mime, aimg_data, aimg_mime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
   const info = stmt.run(
     q.question,
     q.answer,
     q.topic,
     q.subject,
-    q.qimg ?? null,
-    q.aimg ?? null
+    q.qimg_data ?? null,
+    q.qimg_mime ?? null,
+    q.aimg_data ?? null,
+    q.aimg_mime ?? null
   )
   return { ...q, id: info.lastInsertRowid }
 })
