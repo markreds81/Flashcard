@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -14,7 +15,21 @@ interface FormQuestionProps {
   onSubmit: (question: Omit<Question, "id">) => Promise<boolean>;
 }
 
-export default function FormQuestion({ open, onOpenChange, onSubmit }: FormQuestionProps) {
+const handlePasteClean = (
+  e: React.ClipboardEvent<HTMLTextAreaElement>,
+  setter: (value: string) => void
+) => {
+  e.preventDefault();
+  const text = e.clipboardData.getData("text/plain");
+  const cleaned = text.replace(/\s+/g, " ").trim();
+  setter(cleaned);
+};
+
+export default function FormQuestion({
+  open,
+  onOpenChange,
+  onSubmit,
+}: FormQuestionProps) {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [topic, setTopic] = useState("");
@@ -23,6 +38,7 @@ export default function FormQuestion({ open, onOpenChange, onSubmit }: FormQuest
   const [qimgMime, setQimgMime] = useState<string | null>(null);
   const [aimgData, setAimgData] = useState<Uint8Array | null>(null);
   const [aimgMime, setAimgMime] = useState<string | null>(null);
+  const [autoCloseable, setAutoCloseable] = useState(true);
   const qimgRef = useRef<HTMLInputElement | null>(null);
   const aimgRef = useRef<HTMLInputElement | null>(null);
 
@@ -48,19 +64,21 @@ export default function FormQuestion({ open, onOpenChange, onSubmit }: FormQuest
       qimg_data: qimgData,
       qimg_mime: qimgMime,
       aimg_data: aimgData,
-      aimg_mime: aimgMime
+      aimg_mime: aimgMime,
     });
 
     if (success) {
       setQuestion("");
       setAnswer("");
-      setTopic("");
-      setSubject("");
       setQimgData(null);
       setQimgMime(null);
       setAimgData(null);
       setAimgMime(null);
-      onOpenChange(false);
+      if (autoCloseable) {
+        setTopic("");
+        setSubject("");
+        onOpenChange(false);
+      }
       if (qimgRef.current) qimgRef.current.value = "";
       if (aimgRef.current) aimgRef.current.value = "";
     }
@@ -108,6 +126,7 @@ export default function FormQuestion({ open, onOpenChange, onSubmit }: FormQuest
               value={question}
               placeholder='Supporta HTML e MathJax. Esempio: "La derivata di x^2 è $2x$"'
               onChange={(e) => setQuestion(e.target.value)}
+              onPaste={(e) => handlePasteClean(e, setQuestion)}
               rows={4}
               className="border border-gray-300 rounded px-2 py-1 resize-y"
             />
@@ -119,6 +138,7 @@ export default function FormQuestion({ open, onOpenChange, onSubmit }: FormQuest
               value={answer}
               placeholder='Supporta HTML e MathJax. Esempio: "La derivata di x^2 è $2x$"'
               onChange={(e) => setAnswer(e.target.value)}
+              onPaste={(e) => handlePasteClean(e, setAnswer)}
               rows={4}
               className="border border-gray-300 rounded px-2 py-1 resize-y"
             />
@@ -160,6 +180,20 @@ export default function FormQuestion({ open, onOpenChange, onSubmit }: FormQuest
             </button>
           </div>
         </form>
+        <DialogFooter>
+          <div>
+            <input
+              type="checkbox"
+              id="auto-closeable"
+              checked={autoCloseable}
+              onChange={(e) => setAutoCloseable(e.target.checked)}
+              className="mr-2"
+            />
+            <label htmlFor="auto-closeable" className="text-sm text-gray-600">
+              Chiudi automaticamente dopo l'aggiunta
+            </label>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

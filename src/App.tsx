@@ -4,6 +4,7 @@ import { Question } from "./types";
 import "katex/dist/katex.min.css";
 import "./App.css";
 import FormQuestion from "./components/FormQuestion";
+import { Delete, Trash } from "lucide-react";
 
 const defaultQuestions: Question[] = [
   {
@@ -29,12 +30,20 @@ const defaultQuestions: Question[] = [
 ];
 
 function renderWithMath(content: string) {
-  // Trova ed evidenzia parti tra \\( ... \\) per usarle come InlineMath
-  const parts = content.split(/(\\\(.*?\\\))/g);
+  const parts = content.split(/(\$\$.*?\$\$|\$.*?\$|\\\(.*?\\\))/g);
+  // Split by $$...$$, $...$, and \( ... \) for inline math
 
   return parts.map((part, index) => {
-    if (part.startsWith("\\(") && part.endsWith("\\)")) {
-      const latex = part.slice(2, -2);
+    const isMath =
+      (part.startsWith("\\(") && part.endsWith("\\)")) ||
+      (part.startsWith("$") && part.endsWith("$"));
+
+    if (isMath) {
+      const latex = part
+        .replace(/^\\\(/, "")
+        .replace(/\\\)$/, "")
+        .replace(/^\$/, "")
+        .replace(/\$$/, "");
       return <InlineMath key={index} math={latex} />;
     } else {
       return <span key={index} dangerouslySetInnerHTML={{ __html: part }} />;
@@ -220,7 +229,7 @@ function App() {
               title="Reset"
               className="app-search-reset"
             >
-              &#10006;
+              <Delete />
             </button>
           )}
         </div>
@@ -258,7 +267,7 @@ function App() {
                   }}
                   className="app-table-remove"
                 >
-                  🗑️
+                  <Trash />
                 </button>
               </td>
             </tr>
