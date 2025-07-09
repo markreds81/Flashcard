@@ -174,6 +174,21 @@ button {
   font-weight: 600;
 }
 
+.app-buttons button {
+  background: #353535;   /* grigio chiaro */
+  color: #bbb;           /* testo scuro, per contrasto */
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  gap: 0.5rem;
+}
+
+.app-buttons button:hover {
+  background: #5a5a5a;   /* leggermente più scuro al passaggio */
+}
+
 .app-search-row {
   display: flex;
   justify-content: space-between;

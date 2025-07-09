@@ -4,7 +4,7 @@ import { Question } from "./types";
 import "katex/dist/katex.min.css";
 import "./App.css";
 import FormQuestion from "./components/FormQuestion";
-import { Delete, Trash } from "lucide-react";
+import { Delete, FilePlus, ListRestart, Trash } from "lucide-react";
 
 const defaultQuestions: Question[] = [
   {
@@ -156,9 +156,8 @@ function App() {
           </div>
           {selectedQuestion.qimg_data && selectedQuestion.qimg_mime && (
             <img
-              src={`data:${
-                selectedQuestion.qimg_mime
-              };base64,${arrayBufferToBase64(selectedQuestion.qimg_data)}`}
+              src={`data:${selectedQuestion.qimg_mime
+                };base64,${arrayBufferToBase64(selectedQuestion.qimg_data)}`}
               alt="Immagine domanda"
               style={{
                 marginTop: 8,
@@ -177,9 +176,8 @@ function App() {
           </div>
           {selectedQuestion.aimg_data && selectedQuestion.aimg_mime && (
             <img
-              src={`data:${
-                selectedQuestion.aimg_mime
-              };base64,${arrayBufferToBase64(selectedQuestion.aimg_data)}`}
+              src={`data:${selectedQuestion.aimg_mime
+                };base64,${arrayBufferToBase64(selectedQuestion.aimg_data)}`}
               alt="Immagine risposta"
               style={{
                 marginTop: 8,
@@ -207,13 +205,26 @@ function App() {
         onSubmit={handleSubmit}
       />
       <div className="app-search-row">
-        <button
-          type="button"
-          className="app-form-submit"
-          onClick={() => setPopupOpen(true)}
-        >
-          Nuovo
-        </button>
+        <div className="app-buttons">
+          <button
+            type="button"
+            onClick={() => setPopupOpen(true)}
+          >
+            <FilePlus />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setLoading(true);
+              window.flashcardAPI
+                .load()
+                .then(setQuestions)
+                .finally(() => setLoading(false));
+            }}
+          >
+            <ListRestart />
+          </button>
+        </div>
         <div className="app-search-box">
           <input
             type="text"
