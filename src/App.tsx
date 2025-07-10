@@ -97,10 +97,15 @@ function App() {
   }, []);
 
   const filteredQuestions = questions.filter((q) => {
-    const s = search.toLowerCase();
-    return (
-      q.question.toLowerCase().includes(s) || q.answer.toLowerCase().includes(s)
-    );
+    const terms = search
+      .toLowerCase()
+      .split(/\s+/) // divide per spazi
+      .filter(Boolean); // rimuove stringhe vuote
+
+    return terms.every((term) => {
+      const pattern = new RegExp(`\\b${term}`, "i"); // inizio parola
+      return pattern.test(q.question) || pattern.test(q.answer);
+    });
   });
 
   const handleSubmit = async (
@@ -156,8 +161,9 @@ function App() {
           </div>
           {selectedQuestion.qimg_data && selectedQuestion.qimg_mime && (
             <img
-              src={`data:${selectedQuestion.qimg_mime
-                };base64,${arrayBufferToBase64(selectedQuestion.qimg_data)}`}
+              src={`data:${
+                selectedQuestion.qimg_mime
+              };base64,${arrayBufferToBase64(selectedQuestion.qimg_data)}`}
               alt="Immagine domanda"
               style={{
                 marginTop: 8,
@@ -176,8 +182,9 @@ function App() {
           </div>
           {selectedQuestion.aimg_data && selectedQuestion.aimg_mime && (
             <img
-              src={`data:${selectedQuestion.aimg_mime
-                };base64,${arrayBufferToBase64(selectedQuestion.aimg_data)}`}
+              src={`data:${
+                selectedQuestion.aimg_mime
+              };base64,${arrayBufferToBase64(selectedQuestion.aimg_data)}`}
               alt="Immagine risposta"
               style={{
                 marginTop: 8,
@@ -206,10 +213,7 @@ function App() {
       />
       <div className="app-search-row">
         <div className="app-buttons">
-          <button
-            type="button"
-            onClick={() => setPopupOpen(true)}
-          >
+          <button type="button" onClick={() => setPopupOpen(true)}>
             <FilePlus />
           </button>
           <button
