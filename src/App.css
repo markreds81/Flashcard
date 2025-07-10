@@ -249,6 +249,10 @@ button {
   cursor: pointer;
 }
 
+.selected-row {
+  background-color: #5c9ef5; /* ad esempio un grigio chiaro */
+}
+
 .app-table-remove {
   background: none;
   border: none;

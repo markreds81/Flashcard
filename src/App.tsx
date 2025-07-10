@@ -65,9 +65,8 @@ function App() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
-    null
-  );
+  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
+  const [selectedRow, setSelectedRow] = useState<Number>(-1);
   const [isPopupOpen, setPopupOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -142,7 +141,6 @@ function App() {
   }
 
   if (selectedQuestion) {
-    console.log("Selected question:", selectedQuestion);
     return (
       <div className="app-detail">
         <button
@@ -220,6 +218,8 @@ function App() {
             type="button"
             onClick={() => {
               setLoading(true);
+              setSelectedRow(-1);
+              setSelectedQuestion(null);
               window.flashcardAPI
                 .load()
                 .then(setQuestions)
@@ -265,8 +265,9 @@ function App() {
               onClick={(e) => {
                 if ((e.target as HTMLElement).tagName === "BUTTON") return;
                 setSelectedQuestion(q);
+                setSelectedRow(q.id);
               }}
-              className="app-table-row"
+              className={`app-table-row ${selectedRow === q.id ? 'selected-row' : ''}`}
             >
               <td>{q.id}</td>
               <td>{renderWithMath(q.question)}</td>
