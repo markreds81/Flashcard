@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Question } from "@/types";
 import "katex/dist/katex.min.css";
 import "./App.css";
-import { Delete, File, FilePlus, ListRestart, Trash } from "lucide-react";
+import { Delete, FilePlus, ListRestart, Trash } from "lucide-react";
 import QuestionForm from "@/components/QuestionForm";
 
 const defaultQuestions: Question[] = [
@@ -258,9 +258,7 @@ function App() {
           <button
             type="button"
             onClick={() => {
-              setSearch("");
               setLoading(true);
-              setSelectedQuestion(null);
               window.flashcardAPI
                 .load()
                 .then(setQuestions)
@@ -314,7 +312,7 @@ function App() {
               Risposta{" "}
               {sortField === "answer" && (sortDirection === "asc" ? "▲" : "▼")}
             </th>
-            <th>Azioni</th>
+            <th style={{ width: 40 }}>Azioni</th>
           </tr>
         </thead>
         <tbody>
@@ -323,6 +321,7 @@ function App() {
               key={q.id}
               onClick={() => {
                 setSelectedQuestion(q);
+                setShowDetail(true);
               }}
               className={`app-table-row ${
                 selectedQuestion?.id === q.id ? "selected-row" : ""
@@ -334,18 +333,6 @@ function App() {
               <td>{renderWithMath(q.answer)}</td>
               <td style={{ textAlign: "center" }}>
                 <div className="app-table-actions">
-                  <button
-                    type="button"
-                    title="Dettagli"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedQuestion(q);
-                      setShowDetail(true);
-                    }}
-                    className="app-table-remove"
-                  >
-                    <File />
-                  </button>
                   <button
                     type="button"
                     title="Rimuovi"
