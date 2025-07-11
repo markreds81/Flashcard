@@ -326,3 +326,9 @@ button {
   width: 100%;
   max-width: 220px;
 }
+
+.app-footer {
+  padding: 1rem;
+  font-size: .90rem;
+  border-top: 1px solid var(--border);
+}

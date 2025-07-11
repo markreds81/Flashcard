@@ -1,5 +1,5 @@
 import InlineMath from "@matejmazur/react-katex";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Question } from "@/types";
 import "katex/dist/katex.min.css";
 import "./App.css";
@@ -65,9 +65,12 @@ function App() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
+  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
+    null
+  );
   const [showDetail, setShowDetail] = useState(false);
   const [isPopupOpen, setPopupOpen] = useState(false);
+  const selectedRowRef = useRef<HTMLTableRowElement | null>(null);
 
   useEffect(() => {
     window.flashcardAPI
@@ -94,6 +97,15 @@ function App() {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (!showDetail && selectedRowRef.current) {
+      selectedRowRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [showDetail]);
 
   const filteredQuestions = questions.filter((q) => {
     const terms = search
@@ -265,7 +277,10 @@ function App() {
               onClick={() => {
                 setSelectedQuestion(q);
               }}
-              className={`app-table-row ${selectedQuestion?.id === q.id ? 'selected-row' : ''}`}
+              className={`app-table-row ${
+                selectedQuestion?.id === q.id ? "selected-row" : ""
+              }`}
+              ref={selectedQuestion?.id === q.id ? selectedRowRef : null}
             >
               <td>{q.id}</td>
               <td>{renderWithMath(q.question)}</td>
@@ -304,6 +319,9 @@ function App() {
           ))}
         </tbody>
       </table>
+      <div className="app-footer">
+        <span className="app-footer-text">{`Totale quesiti: ${questions.length}`}</span>
+      </div>
     </div>
   );
 }
