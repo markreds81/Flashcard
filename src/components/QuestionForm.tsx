@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-interface FormQuestionProps {
+interface QuestionFormProps {
   open: boolean;
   onOpenChange(open: boolean): void;
   onSubmit: (question: Omit<Question, "id">) => Promise<boolean>;
@@ -25,11 +25,7 @@ const handlePasteClean = (
   setter(cleaned);
 };
 
-export default function FormQuestion({
-  open,
-  onOpenChange,
-  onSubmit,
-}: FormQuestionProps) {
+const QuestionForm: React.FC<QuestionFormProps> = ({ open, onOpenChange, onSubmit }) => {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [topic, setTopic] = useState("");
@@ -197,4 +193,6 @@ export default function FormQuestion({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default QuestionForm;

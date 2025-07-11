@@ -1,10 +1,10 @@
 import InlineMath from "@matejmazur/react-katex";
 import { useState, useEffect } from "react";
-import { Question } from "./types";
+import { Question } from "@/types";
 import "katex/dist/katex.min.css";
 import "./App.css";
-import FormQuestion from "./components/FormQuestion";
 import { Delete, FilePlus, ListRestart, Trash } from "lucide-react";
+import QuestionForm from "@/components/QuestionForm";
 
 const defaultQuestions: Question[] = [
   {
@@ -204,7 +204,7 @@ function App() {
   return (
     <div className="app-root">
       <h1 className="app-title">Elenco Quesiti</h1>
-      <FormQuestion
+      <QuestionForm
         open={isPopupOpen}
         onOpenChange={setPopupOpen}
         onSubmit={handleSubmit}
