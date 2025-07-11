@@ -103,6 +103,10 @@ th, td {
   border: 1px solid var(--border);
 }
 
+td {
+  vertical-align: middle;
+}
+
 th {
   background: var(--table-header);
 }
@@ -241,8 +245,20 @@ button {
   padding: 8px;
 }
 
+.app-table td {
+  vertical-align: middle;
+}
+
 .app-table th {
   background: var(--table-header);
+}
+
+.app-table-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
 }
 
 .app-table-row {
@@ -259,7 +275,10 @@ button {
   color: var(--fg);
   font-size: 1.1rem;
   cursor: pointer;
-  padding: 0;
+  padding: 0.2em 0.4em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .app-detail {

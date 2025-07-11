@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Question } from "@/types";
 import "katex/dist/katex.min.css";
 import "./App.css";
-import { Delete, FilePlus, ListRestart, Trash } from "lucide-react";
+import { Delete, File, FilePlus, ListRestart, Trash } from "lucide-react";
 import QuestionForm from "@/components/QuestionForm";
 
 const defaultQuestions: Question[] = [
@@ -66,8 +66,8 @@ function App() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
-  const [selectedRow, setSelectedRow] = useState<Number>(-1);
-  const [isPopupOpen, setPopupOpen] = useState<boolean>(false);
+  const [showDetail, setShowDetail] = useState(false);
+  const [isPopupOpen, setPopupOpen] = useState(false);
 
   useEffect(() => {
     window.flashcardAPI
@@ -140,11 +140,11 @@ function App() {
     );
   }
 
-  if (selectedQuestion) {
+  if (showDetail && selectedQuestion) {
     return (
       <div className="app-detail">
         <button
-          onClick={() => setSelectedQuestion(null)}
+          onClick={() => setShowDetail(false)}
           className="app-detail-back"
         >
           ← Back
@@ -217,8 +217,8 @@ function App() {
           <button
             type="button"
             onClick={() => {
+              setSearch("");
               setLoading(true);
-              setSelectedRow(-1);
               setSelectedQuestion(null);
               window.flashcardAPI
                 .load()
@@ -255,36 +255,50 @@ function App() {
             <th>ID</th>
             <th>Domanda</th>
             <th>Risposta</th>
-            <th style={{ width: 40 }}></th>
+            <th style={{ width: 40 }}>Azioni</th>
           </tr>
         </thead>
         <tbody>
           {filteredQuestions.map((q) => (
             <tr
               key={q.id}
-              onClick={(e) => {
-                if ((e.target as HTMLElement).tagName === "BUTTON") return;
+              onClick={() => {
                 setSelectedQuestion(q);
-                setSelectedRow(q.id);
               }}
-              className={`app-table-row ${selectedRow === q.id ? 'selected-row' : ''}`}
+              className={`app-table-row ${selectedQuestion?.id === q.id ? 'selected-row' : ''}`}
             >
               <td>{q.id}</td>
               <td>{renderWithMath(q.question)}</td>
               <td>{renderWithMath(q.answer)}</td>
               <td style={{ textAlign: "center" }}>
-                <button
-                  type="button"
-                  title="Rimuovi"
-                  onClick={() => {
-                    window.flashcardAPI.remove(q.id).then(() => {
-                      window.flashcardAPI.load().then(setQuestions);
-                    });
-                  }}
-                  className="app-table-remove"
-                >
-                  <Trash />
-                </button>
+                <div className="app-table-actions">
+                  <button
+                    type="button"
+                    title="Dettagli"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedQuestion(q);
+                      setShowDetail(true);
+                    }}
+                    className="app-table-remove"
+                  >
+                    <File />
+                  </button>
+                  <button
+                    type="button"
+                    title="Rimuovi"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.flashcardAPI.remove(q.id).then(() => {
+                        setSelectedQuestion(null);
+                        window.flashcardAPI.load().then(setQuestions);
+                      });
+                    }}
+                    className="app-table-remove"
+                  >
+                    <Trash />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
