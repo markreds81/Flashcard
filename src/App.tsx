@@ -70,6 +70,10 @@ function App() {
   );
   const [showDetail, setShowDetail] = useState(false);
   const [isPopupOpen, setPopupOpen] = useState(false);
+  const [sortField, setSortField] = useState<
+    "id" | "question" | "answer" | null
+  >(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const selectedRowRef = useRef<HTMLTableRowElement | null>(null);
 
   useEffect(() => {
@@ -107,17 +111,31 @@ function App() {
     }
   }, [showDetail]);
 
-  const filteredQuestions = questions.filter((q) => {
-    const terms = search
-      .toLowerCase()
-      .split(/\s+/) // divide per spazi
-      .filter(Boolean); // rimuove stringhe vuote
+  const filteredQuestions = [...questions]
+    .filter((q) => {
+      const terms = search
+        .toLowerCase()
+        .split(/\s+/) // divide per spazi
+        .filter(Boolean); // rimuove stringhe vuote
 
-    return terms.every((term) => {
-      const pattern = new RegExp(`\\b${term}`, "i"); // inizio parola
-      return pattern.test(q.question) || pattern.test(q.answer);
+      return terms.every((term) => {
+        const pattern = new RegExp(`\\b${term}`, "i"); // inizio parola
+        return pattern.test(q.question) || pattern.test(q.answer);
+      });
+    })
+    .sort((a, b) => {
+      if (!sortField) return 0;
+      const aValue = a[sortField];
+      const bValue = b[sortField];
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+      }
+      const aStr = String(aValue).toLowerCase();
+      const bStr = String(bValue).toLowerCase();
+      return sortDirection === "asc"
+        ? aStr.localeCompare(bStr)
+        : bStr.localeCompare(aStr);
     });
-  });
 
   const handleSubmit = async (
     newQuestion: Omit<Question, "id">
@@ -130,6 +148,15 @@ function App() {
     } catch (error) {
       console.error("Errore durante il salvataggio:", error);
       return false;
+    }
+  };
+
+  const handleSort = (field: "id" | "question" | "answer") => {
+    if (sortField === field) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
     }
   };
 
@@ -264,10 +291,25 @@ function App() {
       <table className="app-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Domanda</th>
-            <th>Risposta</th>
-            <th style={{ width: 40 }}>Azioni</th>
+            <th onClick={() => handleSort("id")} style={{ width: 50, cursor: "pointer" }}>
+              ID {sortField === "id" && (sortDirection === "asc" ? "▲" : "▼")}
+            </th>
+            <th
+              onClick={() => handleSort("question")}
+              style={{ cursor: "pointer" }}
+            >
+              Domanda{" "}
+              {sortField === "question" &&
+                (sortDirection === "asc" ? "▲" : "▼")}
+            </th>
+            <th
+              onClick={() => handleSort("answer")}
+              style={{ cursor: "pointer" }}
+            >
+              Risposta{" "}
+              {sortField === "answer" && (sortDirection === "asc" ? "▲" : "▼")}
+            </th>
+            <th>Azioni</th>
           </tr>
         </thead>
         <tbody>
@@ -304,7 +346,9 @@ function App() {
                     title="Rimuovi"
                     onClick={(e) => {
                       e.stopPropagation();
-                      const confirm = window.confirm("Sei sicuro di voler rimuovere questo quesito?");
+                      const confirm = window.confirm(
+                        "Sei sicuro di voler rimuovere questo quesito?"
+                      );
                       if (!confirm) return;
                       window.flashcardAPI.remove(q.id).then(() => {
                         setSelectedQuestion(null);

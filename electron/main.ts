@@ -94,7 +94,7 @@ app.on('activate', () => {
 app.whenReady().then(createWindow)
 
 ipcMain.handle('load-questions', () => {
-  return db.prepare('SELECT * FROM questions ORDER BY id DESC').all()
+  return db.prepare('SELECT * FROM questions').all()
 })
 
 ipcMain.handle('add-question', (_event, q) => {
