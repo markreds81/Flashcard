@@ -193,7 +193,7 @@ function App() {
         </h2>
         <div className="app-detail-section">
           <span className="app-detail-label">Domanda:</span>
-          <div style={{ marginTop: 8, marginBottom: 16 }}>
+          <div className="app-detail-value">
             {renderWithMath(selectedQuestion.question)}
           </div>
           {selectedQuestion.qimg_data && selectedQuestion.qimg_mime && (
@@ -213,8 +213,10 @@ function App() {
               }}
             />
           )}
+        </div>
+        <div className="app-detail-section">
           <span className="app-detail-label">Risposta:</span>
-          <div style={{ marginTop: 8 }}>
+          <div className="app-detail-value">
             {renderWithMath(selectedQuestion.answer)}
           </div>
           {selectedQuestion.aimg_data && selectedQuestion.aimg_mime && (
@@ -291,7 +293,10 @@ function App() {
       <table className="app-table">
         <thead>
           <tr>
-            <th onClick={() => handleSort("id")} style={{ width: 50, cursor: "pointer" }}>
+            <th
+              onClick={() => handleSort("id")}
+              style={{ width: 50, cursor: "pointer" }}
+            >
               ID {sortField === "id" && (sortDirection === "asc" ? "▲" : "▼")}
             </th>
             <th
@@ -366,7 +371,11 @@ function App() {
         </tbody>
       </table>
       <div className="app-footer">
-        <span className="app-footer-text">{`Totale quesiti: ${questions.length}`}</span>
+        <span className="app-footer-text">
+          {search
+            ? `Quesiti trovati: ${filteredQuestions.length} su ${questions.length}`
+            : `Totale quesiti: ${questions.length}`}
+        </span>
       </div>
     </div>
   );

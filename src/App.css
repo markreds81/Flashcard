@@ -299,6 +299,7 @@ button {
 
 .app-detail-title {
   margin-top: 0;
+  margin-bottom: 1rem;
 }
 
 .app-detail-section {
@@ -307,6 +308,11 @@ button {
 
 .app-detail-label {
   font-weight: bold;
+  margin-top: 8;
+}
+
+.app-detail-value {
+  font-size: 1.25rem;
 }
 
 .app-detail-id {
