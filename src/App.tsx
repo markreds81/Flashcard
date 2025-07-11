@@ -304,6 +304,8 @@ function App() {
                     title="Rimuovi"
                     onClick={(e) => {
                       e.stopPropagation();
+                      const confirm = window.confirm("Sei sicuro di voler rimuovere questo quesito?");
+                      if (!confirm) return;
                       window.flashcardAPI.remove(q.id).then(() => {
                         setSelectedQuestion(null);
                         window.flashcardAPI.load().then(setQuestions);
